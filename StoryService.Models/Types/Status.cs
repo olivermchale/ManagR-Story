@@ -4,7 +4,11 @@ using System.Text;
 
 namespace StoryService.Models.Types
 {
-    class Class1
+    public enum Status
     {
+        Pending = 0,
+        InProgress = 1,
+        Blocked = 2,
+        Complete = 3
     }
 }

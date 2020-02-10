@@ -1,19 +1,14 @@
-﻿using StoryService.Models.Interfaces;
+﻿using StoryService.Models.Types;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace StoryService.Models.Dtos
 {
-    public class StoryDto
+    public class StoryDto : TaskBaseDto
     {
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public DateTime CreatedOn { get; set; }
-        public Guid CreatedBy { get; set; }
-        public List<Guid> Assignees { get; set; }
-        public DateTime DueBy { get; set; }
         public Guid SuperStoryId { get; set; }
-        public bool IsActive { get; set; }
+        public SuperStoryDto SuperStory { get; set; }
+        public List<TaskDto> Tasks { get; set; }
     }
 }

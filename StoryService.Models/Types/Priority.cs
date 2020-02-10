@@ -4,7 +4,10 @@ using System.Text;
 
 namespace StoryService.Models.Types
 {
-    class Class1
+    public enum Priority
     {
+        Low = 0,
+        Medium = 1,
+        High = 2       
     }
 }
