@@ -10,10 +10,12 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\StoryService.Data\StoryService.Data.csproj" />
+    <ProjectReference Include="..\StoryService.Repository\StoryService.Repository.csproj" />
   </ItemGroup>
 
 </Project>

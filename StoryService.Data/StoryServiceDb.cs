@@ -36,6 +36,7 @@ namespace StoryService.Data
                 s.Property(p => p.Status).IsRequired();
                 s.Property(p => p.IsComplete).IsRequired();
                 s.Property(p => p.IsActive).IsRequired();
+                s.Property(p => p.BoardId).IsRequired();
             });
 
             modelBuilder.Entity<StoryDto>(s =>
@@ -49,7 +50,9 @@ namespace StoryService.Data
                 s.Property(p => p.Prority).IsRequired();
                 s.Property(p => p.Status).IsRequired();
                 s.Property(p => p.IsComplete).IsRequired();
+                s.Property(p => p.StoryPoints).IsRequired();
                 s.Property(p => p.IsActive).IsRequired();
+                s.Property(p => p.BoardId).IsRequired();
             });
 
             modelBuilder.Entity<TaskDto>(s =>
@@ -64,6 +67,7 @@ namespace StoryService.Data
                 s.Property(p => p.Status).IsRequired();
                 s.Property(p => p.IsComplete).IsRequired();
                 s.Property(p => p.IsActive).IsRequired();
+                s.Property(p => p.BoardId).IsRequired();
             });
         }
 

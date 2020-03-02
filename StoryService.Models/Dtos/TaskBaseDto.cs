@@ -18,5 +18,6 @@ namespace StoryService.Models.Dtos
         public Status Status { get; set; }
         public bool IsComplete { get; set; }
         public bool IsActive { get; set; }
+        public Guid BoardId { get; set; }
     }
 }

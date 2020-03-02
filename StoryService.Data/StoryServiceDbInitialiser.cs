@@ -37,7 +37,8 @@ namespace StoryService.Data
                     IsComplete = false,
                     Prority = Models.Types.Priority.High,
                     Status = Models.Types.Status.Pending,
-                    Title = "Stub Super Story 1"
+                    Title = "Stub Super Story 1",
+                    BoardId = Guid.Parse("dbb831c6-67da-4e92-bdc4-d2f748efad20"),
                 }
             };
             superStories.ForEach(superStory => context.SuperStories.Add(superStory));
@@ -67,7 +68,8 @@ namespace StoryService.Data
                     CustomLabel = "Release 1",
                     StoryPoints = 1,
                     SuperStoryId = Guid.Parse("c516eba1-7eb0-49e1-861d-608d47d4b8c5"),
-                    SuperStory = superStories.First()
+                    SuperStory = superStories.First(),
+                    BoardId = Guid.Parse("dbb831c6-67da-4e92-bdc4-d2f748efad20"),
                 }
             };
             stories.ForEach(story => context.Stories.Add(story));
@@ -97,6 +99,7 @@ namespace StoryService.Data
                     Order = 1,
                     Story = stories.First(),
                     StoryId = Guid.Parse("5cafcc21-6ee1-4a2a-bac4-a678936bc682"),
+                    BoardId = Guid.Parse("dbb831c6-67da-4e92-bdc4-d2f748efad20"),
                 }
             };
             tasks.ForEach(task => context.Tasks.Add(task));
