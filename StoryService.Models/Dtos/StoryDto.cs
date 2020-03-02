@@ -8,6 +8,8 @@ namespace StoryService.Models.Dtos
     public class StoryDto : TaskBaseDto
     {
         public Guid SuperStoryId { get; set; }
+        public double StoryPoints { get; set; }
+        public string CustomLabel { get; set; }
         public SuperStoryDto SuperStory { get; set; }
         public List<TaskDto> Tasks { get; set; }
     }
