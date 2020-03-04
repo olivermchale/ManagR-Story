@@ -31,6 +31,18 @@ namespace StoryService
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddPolicy("ManagRAppServices",
+                builder =>
+                {
+                    builder.WithOrigins("https://localhost:4200",
+                                        "http://localhost:4200")
+                                        .AllowAnyOrigin()
+                                        .AllowAnyMethod();
+                });
+            });
+
             services.AddDbContext<StoryServiceDb>(options => options.UseSqlServer(
              Configuration.GetConnectionString("PurchaseOrders")));
 
@@ -48,6 +60,8 @@ namespace StoryService
             }
 
             app.UseRouting();
+
+            app.UseCors("ManagRAppServices");
 
             app.UseEndpoints(endpoints =>
             {

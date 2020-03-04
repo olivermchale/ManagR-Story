@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using StoryService.Repository;
 using StoryService.Repository.Interfaces;
 
 namespace StoryService.Controllers
 {
+    [EnableCors("ManagRAppServices")]
     public class BoardController : Controller
     {
         public IBoardRepository _boardRepository;
