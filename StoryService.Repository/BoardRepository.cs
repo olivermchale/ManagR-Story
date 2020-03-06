@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using StoryService.Data;
 using StoryService.Models.Dtos;
+using StoryService.Models.ViewModels;
 using StoryService.Models.ViewModels.Board;
 using StoryService.Repository.Interfaces;
 using System;
@@ -32,13 +33,23 @@ namespace StoryService.Repository
                     Priority = b.Prority,
                     Status = b.Status,
                     StoryPoints = b.StoryPoints,
-                    Tasks = _mapper.Map<List<BoardTaskVm>>(b.Tasks),
+                    Tasks = OrderTasksByStatus(_mapper.Map<List<BoardTaskVm>>(b.Tasks)),
                     Title = b.Title
                 }).ToListAsync();
 
             return new BoardVm
             {
                 Stories = stories
+            };
+        }
+
+        public static BoardTaskListVm OrderTasksByStatus(List<BoardTaskVm> tasks)
+        {
+            return new BoardTaskListVm
+            {
+                Todo = tasks.Where(s => s.Status == Models.Types.Status.Pending).ToList(),
+                InProgress = tasks.Where(s => s.Status == Models.Types.Status.InProgress).ToList(),
+                Done = tasks.Where(s => s.Status == Models.Types.Status.Complete).ToList()
             };
         }
     }

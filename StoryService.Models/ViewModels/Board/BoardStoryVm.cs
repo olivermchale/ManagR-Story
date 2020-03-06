@@ -12,7 +12,7 @@ namespace StoryService.Models.ViewModels.Board
         public double StoryPoints { get; set; }
         public Priority Priority { get; set; }
         public Status Status { get; set; }
-        public List<BoardTaskVm> Tasks { get; set; }
+        public BoardTaskListVm Tasks { get; set; }
 
     }
 }
