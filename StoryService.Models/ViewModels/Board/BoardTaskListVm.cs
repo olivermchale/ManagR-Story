@@ -8,5 +8,6 @@ namespace StoryService.Models.ViewModels
         public List<BoardTaskVm> Todo { get; set; }
         public List<BoardTaskVm> InProgress { get; set; }
         public List<BoardTaskVm> Done { get; set; }
+        public List<BoardTaskVm> Blocked  { get; set; }
     }
 }

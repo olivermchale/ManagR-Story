@@ -49,7 +49,8 @@ namespace StoryService.Repository
             {
                 Todo = tasks.Where(s => s.Status == Models.Types.Status.Pending).ToList(),
                 InProgress = tasks.Where(s => s.Status == Models.Types.Status.InProgress).ToList(),
-                Done = tasks.Where(s => s.Status == Models.Types.Status.Complete).ToList()
+                Done = tasks.Where(s => s.Status == Models.Types.Status.Complete).ToList(),
+                Blocked = tasks.Where(s => s.Status == Models.Types.Status.Blocked).ToList()
             };
         }
     }
