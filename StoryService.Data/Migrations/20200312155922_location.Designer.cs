@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StoryService.Data;
 
 namespace StoryService.Data.Migrations
 {
     [DbContext(typeof(StoryServiceDb))]
-    partial class StoryServiceDbModelSnapshot : ModelSnapshot
+    [Migration("20200312155922_location")]
+    partial class location
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,9 +26,6 @@ namespace StoryService.Data.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("AgileItemType")
-                        .HasColumnType("int");
 
                     b.Property<Guid>("AssigneeId")
                         .HasColumnType("uniqueidentifier");
@@ -74,6 +73,7 @@ namespace StoryService.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<double?>("StoryPoints")
+                        .IsRequired()
                         .HasColumnType("float");
 
                     b.Property<string>("Title")
