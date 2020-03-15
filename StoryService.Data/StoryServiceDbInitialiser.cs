@@ -18,6 +18,7 @@ namespace StoryService.Data
             }
             var agileItems = new List<AgileItemDto>
             {
+                // Super stories
                 new AgileItemDto
                 {
                     Id = Guid.Parse("44305f57-ff1a-4269-8348-ebb79326aa26"),
@@ -37,6 +38,7 @@ namespace StoryService.Data
                     Status = Models.Types.Status.Pending,
                     Title = "NASA Mission 1"
                 },
+                // Stories
                 new AgileItemDto
                 {
                     Id = Guid.Parse("67d8260f-5920-4988-93f4-7c2e9f3546cb"),
@@ -56,6 +58,26 @@ namespace StoryService.Data
                     Priority = Models.Types.Priority.Medium,
                     Status = Models.Types.Status.InProgress,
                     Title = "Build rocket"
+                },
+                new AgileItemDto
+                {
+                    Id = Guid.Parse("ade18239-6cad-4d6d-b51a-d5a5cd84b0b0"),
+                    ParentId = Guid.Parse("44305f57-ff1a-4269-8348-ebb79326aa26"),
+                    AssigneeId = Guid.Parse("aa6b576b-93f1-485e-87bc-2710e694a33a"),
+                    AssigneeName = "Oliver M",
+                    AgileItemType = Models.Types.AgileItemType.Story,
+                    BoardId = Guid.Parse("dbb831c6-67da-4e92-bdc4-d2f748efad20"),
+                    CreatedBy = Guid.Parse("aa6b576b-93f1-485e-87bc-2710e694a33a"),
+                    CreatedOn = new DateTime(),
+                    CustomLabel = "Moon",
+                    Description = "Gather the supplies for the rocket ship",
+                    DueBy = new DateTime().AddDays(1),
+                    IsActive = true,
+                    IsComplete = false,
+                    Order = 2,
+                    Priority = Models.Types.Priority.High,
+                    Status = Models.Types.Status.Pending,
+                    Title = "Gather supplies"
                 },
                 new AgileItemDto
                 {

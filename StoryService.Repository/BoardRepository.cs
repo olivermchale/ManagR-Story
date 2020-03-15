@@ -20,36 +20,6 @@ namespace StoryService.Repository
             _context = context;
         }
 
-        //public async Task<List<AgileItemVm>> GetBoard(Guid boardId)
-        //{
-        //    List<AgileItemVm> superStories = new List<AgileItemVm>();
-        //    var allAgileItems = await _context.AgileItems
-        //        .Where(s => s.IsActive == true)
-        //        .Select(c => new AgileItemVm(c))
-        //        .ToListAsync();
-
-        //    if(allAgileItems == null)
-        //    {
-        //        return null;
-        //    }
-
-        //    var hashedAgileItems = allAgileItems.ToDictionary(x => x.Id, x => x);
-
-        //    for (int i = 0; i < allAgileItems.Count; i++)
-        //    {
-        //        var agileItem = allAgileItems[i];
-        //        if (hashedAgileItems.ContainsKey(agileItem.ParentId))
-        //        {
-        //            hashedAgileItems[agileItem.ParentId].AgileItems.Add(agileItem);
-        //        }
-        //        else
-        //        {
-        //            superStories.Add(agileItem);
-        //        }
-        //    }
-        //    return superStories;
-        //}
-
         public async Task<BoardVm> GetBoard(Guid BoardId)
         {
             var stories = await _context.AgileItems
