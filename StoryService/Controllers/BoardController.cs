@@ -24,5 +24,12 @@ namespace StoryService.Controllers
             var board = await _boardRepository.GetBoard(id);
             return Ok(board);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetBoardNames()
+        {
+            var boards = await _boardRepository.GetBoardNames();
+            return Ok(boards);
+        }
     }
 }

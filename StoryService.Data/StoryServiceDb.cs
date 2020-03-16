@@ -6,6 +6,7 @@ namespace StoryService.Data
 {
     public class StoryServiceDb : DbContext
     {
+        public DbSet<BoardDto> Boards { get; set; }
         public DbSet<AgileItemDto> AgileItems { get; set; }
 
         public StoryServiceDb(DbContextOptions<StoryServiceDb> options) : base(options)
@@ -21,6 +22,12 @@ namespace StoryService.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<BoardDto>(b =>
+            {
+                b.Property(p => p.Id).IsRequired();
+                b.Property(p => p.BoardName).IsRequired();
+            });
 
             modelBuilder.Entity<AgileItemDto>(s =>
             {

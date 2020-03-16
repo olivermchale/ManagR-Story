@@ -59,6 +59,22 @@ namespace StoryService.Repository
             };
         }
 
+        public async Task<BoardNameListVm> GetBoardNames()
+        {
+            var boardNames = await _context.Boards
+                .Where(b => b.IsActive == true)
+                .Select(b => new BoardNameVm
+                {
+                    BoardName = b.BoardName,
+                    Id = b.Id
+                }).ToListAsync();
+
+            return new BoardNameListVm
+            {
+                boardNames = boardNames
+            };
+        }
+
         public static BoardTaskListVm OrderTasksByStatus(List<BoardTaskVm> tasks)
         {
             return new BoardTaskListVm

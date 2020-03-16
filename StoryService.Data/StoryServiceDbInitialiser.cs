@@ -16,6 +16,27 @@ namespace StoryService.Data
                 // db is seeded
                 return;
             }
+            var boards = new List<BoardDto>
+            {
+                new BoardDto
+                {
+                    Id = Guid.Parse("dbb831c6-67da-4e92-bdc4-d2f748efad20"),
+                    BoardName = "Hailzys Board",
+                    IsActive = true,
+                },
+                new BoardDto
+                {
+                    Id = Guid.Parse("1f7f8649-8fd5-4346-ad7c-51c30fa96607"),
+                    BoardName = "Rena's Board",
+                    IsActive = true
+                },
+            };
+            boards.ForEach(board =>
+            {
+                context.Boards.Add(board);
+            });
+            await context.SaveChangesAsync();
+
             var agileItems = new List<AgileItemDto>
             {
                 // Super stories
@@ -92,6 +113,8 @@ namespace StoryService.Data
                     CustomLabel = "Moon",
                     Description = "Buy all rocket parts",
                     DueBy = new DateTime().AddDays(1),
+                    EstimatedTime = 2,
+                    LoggedTime = 1,
                     IsActive = true,
                     IsComplete = false,
                     Order = 2,
@@ -112,11 +135,13 @@ namespace StoryService.Data
                     CustomLabel = "Moon",
                     Description = "Put together rocket parts",
                     DueBy = new DateTime().AddDays(1),
+                    EstimatedTime = 5,
+                    LoggedTime = 0,
                     IsActive = true,
                     IsComplete = false,
                     Order = 2,
                     Priority = Models.Types.Priority.Medium,
-                    Status = Models.Types.Status.InProgress,
+                    Status = Models.Types.Status.Pending,
                     Title = "Put parts together"
                 },
             };
