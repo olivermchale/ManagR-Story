@@ -47,6 +47,7 @@ namespace StoryService
              Configuration.GetConnectionString("PurchaseOrders")));
 
             services.AddScoped<IBoardRepository, BoardRepository>();
+            services.AddScoped<IAgileItemRepository, AgileItemRepository>();
 
             services.AddControllers().AddNewtonsoftJson();
         }
