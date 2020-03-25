@@ -18,11 +18,24 @@ namespace StoryService.Repository
         {
             _context = context;
         }
-        public async Task<bool> CreateAgileItem(AgileItemDto agileItem)
+
+        public async Task<bool> CreateAgileItem(CreateAgileItemDto agileItem)
         {
+            var fullItem = GetFullAgileItem(agileItem);
             try
             {
-                await _context.AgileItems.AddAsync(agileItem);
+                if (fullItem.AgileItemType != Models.Types.AgileItemType.SuperStory)
+                {
+                    var parent = await _context.AgileItems.Where(i => i.Id == fullItem.ParentId).FirstOrDefaultAsync();
+                    var board = await _context.Boards.Where(b => b.Id == fullItem.BoardId).FirstOrDefaultAsync();
+
+                    if (parent == null || board == null)
+                    {
+                        throw new Exception("Invalid parent Id");
+                    }
+                }
+
+                await _context.AgileItems.AddAsync(fullItem);
                 await _context.SaveChangesAsync();
                 return true;
             }
@@ -62,7 +75,7 @@ namespace StoryService.Repository
                 if (search.ItemType == Models.Types.AgileItemType.SuperStory)
                 {
                     return await _context.AgileItems
-                     .Where(a => a.AgileItemType == search.ItemType)
+                     .Where(a => a.AgileItemType == search.ItemType && a.BoardId == search.BoardId)
                      .Where(a => a.Title.Contains(search.SearchQuery)
                     || a.Description.Contains(search.SearchQuery)
                     || a.AssigneeName.Contains(search.SearchQuery))
@@ -75,7 +88,7 @@ namespace StoryService.Repository
                 else
                 {
                     var items = await _context.AgileItems
-                     .Where(a => a.AgileItemType == search.ItemType)
+                     .Where(a => a.AgileItemType == search.ItemType && a.BoardId == search.BoardId)
                      .Where(a => a.Title.Contains(search.SearchQuery)
                     || a.Description.Contains(search.SearchQuery)
                     || a.AssigneeName.Contains(search.SearchQuery))
@@ -102,5 +115,31 @@ namespace StoryService.Repository
             }
             return null;
         }
+
+        public AgileItemDto GetFullAgileItem(CreateAgileItemDto agileItem)
+        {
+            // Create Dto in expected shape with some necessary server side generated properties such as createdOn
+            return new AgileItemDto
+            {
+                AgileItemType = agileItem.ItemType,
+                AssigneeId = agileItem.AssigneeId,
+                AssigneeName = agileItem.AssigneeName,
+                Description = agileItem.Description,
+                BoardId = agileItem.Board,
+                CreatedBy = agileItem.CreatedBy,
+                CreatedOn = new DateTime(),
+                DueBy = agileItem.DueBy,
+                EstimatedTime = agileItem.EstimatedTime,
+                IsActive = true,
+                Id = Guid.NewGuid(),
+                IsComplete = false,
+                Order = agileItem.Order,
+                ParentId = agileItem.ParentId,
+                Priority = agileItem.Priority,
+                Status = Models.Types.Status.Pending,
+                StoryPoints = agileItem.StoryPoints,
+                Title = agileItem.Title
+            };
+        } 
     }
 }

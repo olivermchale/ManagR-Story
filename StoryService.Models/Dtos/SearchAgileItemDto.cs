@@ -9,5 +9,6 @@ namespace StoryService.Models.Dtos
     {
         public AgileItemType ItemType { get; set; }
         public string SearchQuery { get; set; }
+        public Guid BoardId { get; set; }
     }
 }

@@ -9,7 +9,7 @@ namespace StoryService.Repository.Interfaces
 {
     public interface IAgileItemRepository
     {
-        public Task<bool> CreateAgileItem(AgileItemDto agileItem);
+        public Task<bool> CreateAgileItem(CreateAgileItemDto agileItem);
 
         Task<bool> CreateStoryWithTasks(CreateStoryWithTasksDto storyAndTasks);
 

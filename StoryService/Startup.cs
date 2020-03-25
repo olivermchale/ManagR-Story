@@ -39,7 +39,8 @@ namespace StoryService
                     builder.WithOrigins("https://localhost:4200",
                                         "http://localhost:4200")
                                         .AllowAnyOrigin()
-                                        .AllowAnyMethod();
+                                        .AllowAnyMethod()
+                                        .AllowAnyHeader();
                 });
             });
 
