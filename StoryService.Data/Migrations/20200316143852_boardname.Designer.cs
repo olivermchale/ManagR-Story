@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StoryService.Data;
 
 namespace StoryService.Data.Migrations
 {
     [DbContext(typeof(StoryServiceDb))]
-    partial class StoryServiceDbModelSnapshot : ModelSnapshot
+    [Migration("20200316143852_boardname")]
+    partial class boardname
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -65,7 +67,7 @@ namespace StoryService.Data.Migrations
                     b.Property<double?>("LoggedTime")
                         .HasColumnType("float");
 
-                    b.Property<int?>("Order")
+                    b.Property<int>("Order")
                         .HasColumnType("int");
 
                     b.Property<Guid>("ParentId")
@@ -101,12 +103,9 @@ namespace StoryService.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
                     b.HasKey("Id");
 
-                    b.ToTable("Boards");
+                    b.ToTable("BoardDto");
                 });
 #pragma warning restore 612, 618
         }

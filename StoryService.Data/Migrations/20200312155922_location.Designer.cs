@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StoryService.Data;
 
 namespace StoryService.Data.Migrations
 {
     [DbContext(typeof(StoryServiceDb))]
-    partial class StoryServiceDbModelSnapshot : ModelSnapshot
+    [Migration("20200312155922_location")]
+    partial class location
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,9 +26,6 @@ namespace StoryService.Data.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("AgileItemType")
-                        .HasColumnType("int");
 
                     b.Property<Guid>("AssigneeId")
                         .HasColumnType("uniqueidentifier");
@@ -53,19 +52,13 @@ namespace StoryService.Data.Migrations
                     b.Property<DateTime>("DueBy")
                         .HasColumnType("datetime2");
 
-                    b.Property<double?>("EstimatedTime")
-                        .HasColumnType("float");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsComplete")
                         .HasColumnType("bit");
 
-                    b.Property<double?>("LoggedTime")
-                        .HasColumnType("float");
-
-                    b.Property<int?>("Order")
+                    b.Property<int>("Order")
                         .HasColumnType("int");
 
                     b.Property<Guid>("ParentId")
@@ -80,6 +73,7 @@ namespace StoryService.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<double?>("StoryPoints")
+                        .IsRequired()
                         .HasColumnType("float");
 
                     b.Property<string>("Title")
@@ -89,24 +83,6 @@ namespace StoryService.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("AgileItems");
-                });
-
-            modelBuilder.Entity("StoryService.Models.Dtos.BoardDto", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("BoardName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Boards");
                 });
 #pragma warning restore 612, 618
         }

@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using StoryService.Data;
 
 namespace StoryService
 {
@@ -13,7 +16,24 @@ namespace StoryService
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            var host = CreateHostBuilder(args).Build();
+            using (var scope = host.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                var env = services.GetRequiredService<IWebHostEnvironment>();
+                var context = services.GetRequiredService<StoryServiceDb>();
+                context.Database.Migrate();
+                try
+                {
+                    StoryServiceDbInitialiser.SeedStubData(context, services).Wait();
+                }
+                catch (Exception)
+                {
+                    var logger = services.GetRequiredService<ILogger<Program>>();
+                    logger.LogDebug("Seeding stub data failed.");
+                }
+            }
+            host.Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

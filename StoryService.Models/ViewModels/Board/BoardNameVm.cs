@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace StoryService.Models.Dtos
+namespace StoryService.Models.ViewModels
 {
-    public class AssigneeDto
+    public class BoardNameVm
     {
         public Guid Id { get; set; }
-        public String DisplayName { get; set; }
+        public string BoardName { get; set; }
     }
 }
