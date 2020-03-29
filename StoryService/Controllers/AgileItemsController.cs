@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using StoryService.Models.Dtos;
+using StoryService.Models.ViewModels.Board;
 using StoryService.Repository.Interfaces;
 
 namespace StoryService.Controllers
@@ -32,6 +33,17 @@ namespace StoryService.Controllers
                 return Ok(success);
             }
             return new StatusCodeResult(500); 
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateAgileItem([FromBody] BoardTaskVm updatedTask)
+        {
+            var success = await _agileItemRepository.UpdateAgileItem(updatedTask);
+            if (success)
+            {
+                return Ok(success);
+            }
+            return new StatusCodeResult(500);
         }
     }
 }

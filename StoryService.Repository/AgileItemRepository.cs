@@ -2,6 +2,7 @@
 using StoryService.Data;
 using StoryService.Models.Dtos;
 using StoryService.Models.ViewModels;
+using StoryService.Models.ViewModels.Board;
 using StoryService.Repository.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -140,6 +141,31 @@ namespace StoryService.Repository
                 StoryPoints = agileItem.StoryPoints,
                 Title = agileItem.Title
             };
-        } 
+        }
+
+        public async Task<bool> UpdateAgileItem(BoardTaskVm updatedTask)
+        {
+            try
+            {
+                var item = await _context.AgileItems.Where(a => a.Id == updatedTask.Id).FirstOrDefaultAsync();
+
+                if (item != null)
+                {
+                    item.Title = updatedTask.Title;
+                    item.Description = updatedTask.Description;
+                    item.Order = updatedTask.Order;
+                    item.Priority = updatedTask.Priority;
+                    item.Status = updatedTask.Status;
+
+                    await _context.SaveChangesAsync();
+                    return true;
+                }                
+            }
+            catch(Exception e)
+            {
+                // Error when updating agile item.
+            }
+            return false;
+        }
     }
 }

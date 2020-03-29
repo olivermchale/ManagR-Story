@@ -1,5 +1,6 @@
 ﻿using StoryService.Models.Dtos;
 using StoryService.Models.ViewModels;
+using StoryService.Models.ViewModels.Board;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -14,5 +15,7 @@ namespace StoryService.Repository.Interfaces
         Task<bool> CreateStoryWithTasks(CreateStoryWithTasksDto storyAndTasks);
 
         Task<List<AgileItemShortVm>> SearchForAgileItem(SearchAgileItemDto search);
+
+        Task<bool> UpdateAgileItem(BoardTaskVm updatedTask);
     }
 }
