@@ -45,5 +45,16 @@ namespace StoryService.Controllers
             }
             return new StatusCodeResult(500);
         }
+        
+        [HttpGet]
+        public async Task<IActionResult> GetFullAgileItem(Guid id)
+        {
+            var item = await _agileItemRepository.GetFullAgileItem(id);
+            if (item != null)
+            {
+                return Ok(item);
+            }
+            return new StatusCodeResult(500);
+        }
     }
 }

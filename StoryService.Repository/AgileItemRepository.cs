@@ -22,7 +22,7 @@ namespace StoryService.Repository
 
         public async Task<bool> CreateAgileItem(CreateAgileItemDto agileItem)
         {
-            var fullItem = GetFullAgileItem(agileItem);
+            var fullItem = CreateServerSideAgileItem(agileItem);
             try
             {
                 if (fullItem.AgileItemType != Models.Types.AgileItemType.SuperStory)
@@ -117,7 +117,7 @@ namespace StoryService.Repository
             return null;
         }
 
-        public AgileItemDto GetFullAgileItem(CreateAgileItemDto agileItem)
+        public AgileItemDto CreateServerSideAgileItem(CreateAgileItemDto agileItem)
         {
             // Create Dto in expected shape with some necessary server side generated properties such as createdOn
             return new AgileItemDto
@@ -166,6 +166,49 @@ namespace StoryService.Repository
                 // Error when updating agile item.
             }
             return false;
+        }
+
+        public async Task<AgileItemVm> GetFullAgileItem(Guid id)
+        {
+            try
+            {
+                var item = await _context.AgileItems.Where(a => a.Id == id && a.IsActive == true)
+                    .Select(i => new AgileItemVm
+                    {
+                        AgileItemType = i.AgileItemType,
+                        AssigneeName = i.AssigneeName,
+                        BoardId = i.BoardId,
+                        CreatedBy = i.CreatedBy,
+                        CreatedOn = i.CreatedOn,
+                        Description = i.Description,
+                        DueBy = i.DueBy,
+                        EstimatedTime = i.EstimatedTime,
+                        Id = i.Id,
+                        IsComplete = i.IsComplete,
+                        LoggedTime = i.LoggedTime,
+                        Order = i.Order,
+                        ParentId = i.ParentId,
+                        Priority = i.Priority,
+                        Status = i.Status,
+                        StoryPoints = i.StoryPoints,
+                        Title = i.Title
+                    }).FirstOrDefaultAsync();
+
+                if (item != null)
+                {
+                    var parentTitle = await _context.AgileItems.Where(a => a.Id == item.ParentId)
+                            .Select(x => x.Title).FirstOrDefaultAsync();
+
+                    item.ParentTitle = parentTitle;
+
+                    return item;
+                }
+            }
+            catch (Exception e)
+            {
+                //exception when getting a full agile item...
+            }
+            return null;
         }
     }
 }

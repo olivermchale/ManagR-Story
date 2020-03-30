@@ -8,24 +8,24 @@ namespace StoryService.Models.ViewModels.Board
 {
     public class AgileItemVm
     {
-        public AgileItemVm(AgileItemDto item)
-        {
-            this.Id = item.Id;
-            this.ParentId = item.ParentId;
-            this.Title = item.Title;
-            this.StoryPoints = item.StoryPoints;
-            this.Priority = item.Priority;
-            this.Status = item.Status;
-            this.Order = item.Order;
-        }
         public Guid Id { get; set; }
         public Guid ParentId { get; set; }
+        public string ParentTitle { get; set; }
         public string Title { get; set; }
-        public double? StoryPoints { get; set; }
+        public string Description { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public Guid CreatedBy { get; set; }
+        public DateTime DueBy { get; set; }
         public Priority Priority { get; set; }
-        public int? Order { get; set; }
         public Status Status { get; set; }
-        public List<AgileItemVm> AgileItems = new List<AgileItemVm>();
-
+        public AgileItemType AgileItemType { get; set; }
+        public bool IsComplete { get; set; }
+        public bool IsActive { get; set; }
+        public double? StoryPoints { get; set; }
+        public double? EstimatedTime { get; set; }
+        public double? LoggedTime { get; set; }
+        public int? Order { get; set; }
+        public string AssigneeName { get; set; }
+        public Guid BoardId { get; set; }
     }
 }

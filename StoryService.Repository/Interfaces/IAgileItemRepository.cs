@@ -12,10 +12,12 @@ namespace StoryService.Repository.Interfaces
     {
         public Task<bool> CreateAgileItem(CreateAgileItemDto agileItem);
 
-        Task<bool> CreateStoryWithTasks(CreateStoryWithTasksDto storyAndTasks);
+        public Task<bool> CreateStoryWithTasks(CreateStoryWithTasksDto storyAndTasks);
 
-        Task<List<AgileItemShortVm>> SearchForAgileItem(SearchAgileItemDto search);
+        public Task<List<AgileItemShortVm>> SearchForAgileItem(SearchAgileItemDto search);
 
-        Task<bool> UpdateAgileItem(BoardTaskVm updatedTask);
+        public Task<bool> UpdateAgileItem(BoardTaskVm updatedTask);
+
+        public Task<AgileItemVm> GetFullAgileItem(Guid id);
     }
 }
