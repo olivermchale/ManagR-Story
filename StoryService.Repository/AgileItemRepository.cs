@@ -128,7 +128,7 @@ namespace StoryService.Repository
                 Description = agileItem.Description,
                 BoardId = agileItem.Board,
                 CreatedBy = agileItem.CreatedBy,
-                CreatedOn = new DateTime(),
+                CreatedOn = DateTime.Now,
                 DueBy = agileItem.DueBy,
                 EstimatedTime = agileItem.EstimatedTime,
                 IsActive = true,
@@ -159,9 +159,9 @@ namespace StoryService.Repository
 
                     await _context.SaveChangesAsync();
                     return true;
-                }                
+                }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 // Error when updating agile item.
             }
@@ -176,6 +176,7 @@ namespace StoryService.Repository
                     .Select(i => new AgileItemVm
                     {
                         AgileItemType = i.AgileItemType,
+                        AssigneeId = i.AssigneeId,
                         AssigneeName = i.AssigneeName,
                         BoardId = i.BoardId,
                         CreatedBy = i.CreatedBy,
@@ -185,6 +186,7 @@ namespace StoryService.Repository
                         EstimatedTime = i.EstimatedTime,
                         Id = i.Id,
                         IsComplete = i.IsComplete,
+                        IsActive = i.IsActive,
                         LoggedTime = i.LoggedTime,
                         Order = i.Order,
                         ParentId = i.ParentId,
@@ -207,6 +209,52 @@ namespace StoryService.Repository
             catch (Exception e)
             {
                 //exception when getting a full agile item...
+            }
+            return null;
+        }
+
+        public async Task<List<AgileItemOverviewVm>> GetRelatedItems(Guid id)
+        {
+            try
+            {
+                var item = await _context.AgileItems.Where(a => a.Id == id && a.IsActive == true).FirstOrDefaultAsync();
+
+                if (item != null)
+                {
+                    if (item.AgileItemType == Models.Types.AgileItemType.Task)
+                    {
+                        return await GetRelatedTasks(item);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                // exception getting related agile items...
+            }
+            return null;
+        }
+
+        public async Task<List<AgileItemOverviewVm>> GetRelatedTasks(AgileItemDto item)
+        {
+            try
+            {
+                return await _context.AgileItems.Where(a => a.ParentId == item.ParentId && a.Id != item.Id && a.IsActive == true)
+                    .Select(i => new AgileItemOverviewVm
+                    {
+                        Description = i.Description,
+                        Id = i.Id,
+                        IsComplete = i.IsComplete,
+                        Order = i.Order,
+                        Priority = i.Priority,
+                        Status = i.Status,
+                        Title = i.Title,
+                        AssigneeId = i.AssigneeId,
+                        AssigneeName = i.AssigneeName
+                    }).Take(5).ToListAsync();
+            }
+            catch (Exception e)
+            {
+                // exception getting related tasks...
             }
             return null;
         }

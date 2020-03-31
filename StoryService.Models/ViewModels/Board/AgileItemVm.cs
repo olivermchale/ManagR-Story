@@ -25,6 +25,7 @@ namespace StoryService.Models.ViewModels.Board
         public double? EstimatedTime { get; set; }
         public double? LoggedTime { get; set; }
         public int? Order { get; set; }
+        public Guid AssigneeId { get; set; }
         public string AssigneeName { get; set; }
         public Guid BoardId { get; set; }
     }
