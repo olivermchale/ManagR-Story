@@ -28,5 +28,7 @@ namespace StoryService.Models.ViewModels.Board
         public Guid AssigneeId { get; set; }
         public string AssigneeName { get; set; }
         public Guid BoardId { get; set; }
+        public int TotalChildren { get; set; }
+        public int CompleteChildren { get; set; }
     }
 }

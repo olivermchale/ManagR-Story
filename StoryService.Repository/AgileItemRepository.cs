@@ -203,6 +203,11 @@ namespace StoryService.Repository
 
                     item.ParentTitle = parentTitle;
 
+                    if(item.AgileItemType != Models.Types.AgileItemType.Task)
+                    {
+                        item.TotalChildren = await _context.AgileItems.Where(a => a.ParentId == item.Id).CountAsync();
+                        item.CompleteChildren = await _context.AgileItems.Where(a => a.ParentId == item.Id && a.Status == Models.Types.Status.Complete).CountAsync();
+                    }
                     return item;
                 }
             }
@@ -225,6 +230,7 @@ namespace StoryService.Repository
                     {
                         return await GetRelatedTasks(item);
                     }
+                    return await GetChildren(item);
                 }
             }
             catch (Exception e)
@@ -250,11 +256,35 @@ namespace StoryService.Repository
                         Title = i.Title,
                         AssigneeId = i.AssigneeId,
                         AssigneeName = i.AssigneeName
-                    }).Take(5).ToListAsync();
+                    }).Take(4).ToListAsync();
             }
             catch (Exception e)
             {
                 // exception getting related tasks...
+            }
+            return null;
+        }
+
+        public async Task<List<AgileItemOverviewVm>> GetChildren(AgileItemDto item)
+        {
+            try
+            {
+                return await _context.AgileItems.Where(i => i.ParentId == item.Id && i.IsActive == true)
+                    .Select(i => new AgileItemOverviewVm
+                    {
+                        Description = i.Description,
+                        Id = i.Id,
+                        IsComplete = i.IsComplete,
+                        Priority = i.Priority,
+                        Status = i.Status,
+                        Title = i.Title,
+                        AssigneeId = i.AssigneeId,
+                        AssigneeName = i.AssigneeName
+                    }).Take(4).ToListAsync();
+            }
+            catch (Exception e)
+            {
+                // exception getting children
             }
             return null;
         }
