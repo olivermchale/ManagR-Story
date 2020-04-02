@@ -45,6 +45,17 @@ namespace StoryService.Controllers
             }
             return new StatusCodeResult(500);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateFullAgileItem([FromBody] AgileItemVm agileItemVm)
+        {
+            var success = await _agileItemRepository.UpdateFullAgileItem(agileItemVm);
+            if (success)
+            {
+                return Ok(success);
+            }
+            return new StatusCodeResult(500);
+        }
         
         [HttpGet]
         public async Task<IActionResult> GetFullAgileItem(Guid id)

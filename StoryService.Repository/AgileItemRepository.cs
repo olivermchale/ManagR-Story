@@ -168,6 +168,44 @@ namespace StoryService.Repository
             return false;
         }
 
+        public async Task<bool> UpdateFullAgileItem(AgileItemVm updatedItem)
+        {
+            try
+            {
+                var item = await _context.AgileItems.Where(a => a.Id == updatedItem.Id).FirstOrDefaultAsync();
+
+                if (item != null)
+                {
+                    item.AgileItemType = updatedItem.AgileItemType;
+                    item.AssigneeId = updatedItem.AssigneeId;
+                    item.AssigneeName = updatedItem.AssigneeName;
+                    item.BoardId = updatedItem.BoardId;
+                    item.CreatedBy = updatedItem.CreatedBy;
+                    item.CreatedOn = updatedItem.CreatedOn;
+                    item.Description = updatedItem.Description;
+                    item.DueBy = updatedItem.DueBy;
+                    item.EstimatedTime = updatedItem.EstimatedTime;
+                    item.Id = updatedItem.Id;
+                    item.IsComplete = updatedItem.IsComplete;
+                    item.IsActive = updatedItem.IsActive;
+                    item.LoggedTime = updatedItem.LoggedTime;
+                    item.Order = updatedItem.Order;
+                    item.ParentId = updatedItem.ParentId;
+                    item.Priority = updatedItem.Priority;
+                    item.Status = updatedItem.Status;
+                    item.StoryPoints = updatedItem.StoryPoints;
+                    item.Title = updatedItem.Title;
+
+                    await _context.SaveChangesAsync();
+                    return true;
+                }
+            } catch (Exception e)
+            {
+                // exception updating full agile item
+            }
+            return false;
+        }
+
         public async Task<AgileItemVm> GetFullAgileItem(Guid id)
         {
             try

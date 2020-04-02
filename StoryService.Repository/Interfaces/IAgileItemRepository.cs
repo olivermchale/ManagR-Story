@@ -18,6 +18,8 @@ namespace StoryService.Repository.Interfaces
 
         public Task<bool> UpdateAgileItem(BoardTaskVm updatedTask);
 
+        public Task<bool> UpdateFullAgileItem(AgileItemVm updatedItem);
+
         public Task<AgileItemVm> GetFullAgileItem(Guid id);
 
         public Task<List<AgileItemOverviewVm>> GetRelatedItems(Guid id);
