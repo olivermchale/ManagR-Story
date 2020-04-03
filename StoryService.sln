@@ -9,7 +9,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoryService.Models", "Stor
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoryService.Data", "StoryService.Data\StoryService.Data.csproj", "{5D1A0B00-8FAC-4794-AE58-D708F5151E6D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoryService.Repository", "StoryService.Repository\StoryService.Repository.csproj", "{6C3E13CD-AB26-42EB-8EEB-A63A93418A41}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoryService.Repository", "StoryService.Repository\StoryService.Repository.csproj", "{6C3E13CD-AB26-42EB-8EEB-A63A93418A41}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EA881353-6261-4F01-9A98-6BAFE90D572C}"
+	ProjectSection(SolutionItems) = preProject
+		azure-pipelines.yml = azure-pipelines.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
