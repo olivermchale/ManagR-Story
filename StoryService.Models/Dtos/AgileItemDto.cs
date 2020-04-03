@@ -20,7 +20,6 @@ namespace StoryService.Models.Dtos
         public bool IsComplete { get; set; }
         public bool IsActive { get; set; }
         public double? StoryPoints { get; set; }
-        public string? CustomLabel { get; set; }
         public double? EstimatedTime { get; set; }
         public double? LoggedTime { get; set; }
         public int? Order { get; set; }

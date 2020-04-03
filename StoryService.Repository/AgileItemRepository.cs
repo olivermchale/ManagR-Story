@@ -2,6 +2,7 @@
 using StoryService.Data;
 using StoryService.Models.Dtos;
 using StoryService.Models.ViewModels;
+using StoryService.Models.ViewModels.Board;
 using StoryService.Repository.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -21,7 +22,7 @@ namespace StoryService.Repository
 
         public async Task<bool> CreateAgileItem(CreateAgileItemDto agileItem)
         {
-            var fullItem = GetFullAgileItem(agileItem);
+            var fullItem = CreateServerSideAgileItem(agileItem);
             try
             {
                 if (fullItem.AgileItemType != Models.Types.AgileItemType.SuperStory)
@@ -116,7 +117,7 @@ namespace StoryService.Repository
             return null;
         }
 
-        public AgileItemDto GetFullAgileItem(CreateAgileItemDto agileItem)
+        public AgileItemDto CreateServerSideAgileItem(CreateAgileItemDto agileItem)
         {
             // Create Dto in expected shape with some necessary server side generated properties such as createdOn
             return new AgileItemDto
@@ -127,7 +128,7 @@ namespace StoryService.Repository
                 Description = agileItem.Description,
                 BoardId = agileItem.Board,
                 CreatedBy = agileItem.CreatedBy,
-                CreatedOn = new DateTime(),
+                CreatedOn = DateTime.Now,
                 DueBy = agileItem.DueBy,
                 EstimatedTime = agileItem.EstimatedTime,
                 IsActive = true,
@@ -140,6 +141,190 @@ namespace StoryService.Repository
                 StoryPoints = agileItem.StoryPoints,
                 Title = agileItem.Title
             };
-        } 
+        }
+
+        public async Task<bool> UpdateAgileItem(BoardTaskVm updatedTask)
+        {
+            try
+            {
+                var item = await _context.AgileItems.Where(a => a.Id == updatedTask.Id).FirstOrDefaultAsync();
+
+                if (item != null)
+                {
+                    item.Title = updatedTask.Title;
+                    item.Description = updatedTask.Description;
+                    item.Order = updatedTask.Order;
+                    item.Priority = updatedTask.Priority;
+                    item.Status = updatedTask.Status;
+
+                    await _context.SaveChangesAsync();
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+                // Error when updating agile item.
+            }
+            return false;
+        }
+
+        public async Task<bool> UpdateFullAgileItem(AgileItemVm updatedItem)
+        {
+            try
+            {
+                var item = await _context.AgileItems.Where(a => a.Id == updatedItem.Id).FirstOrDefaultAsync();
+
+                if (item != null)
+                {
+                    item.AgileItemType = updatedItem.AgileItemType;
+                    item.AssigneeId = updatedItem.AssigneeId;
+                    item.AssigneeName = updatedItem.AssigneeName;
+                    item.BoardId = updatedItem.BoardId;
+                    item.CreatedBy = updatedItem.CreatedBy;
+                    item.CreatedOn = updatedItem.CreatedOn;
+                    item.Description = updatedItem.Description;
+                    item.DueBy = updatedItem.DueBy;
+                    item.EstimatedTime = updatedItem.EstimatedTime;
+                    item.Id = updatedItem.Id;
+                    item.IsComplete = updatedItem.IsComplete;
+                    item.IsActive = updatedItem.IsActive;
+                    item.LoggedTime = updatedItem.LoggedTime;
+                    item.Order = updatedItem.Order;
+                    item.ParentId = updatedItem.ParentId;
+                    item.Priority = updatedItem.Priority;
+                    item.Status = updatedItem.Status;
+                    item.StoryPoints = updatedItem.StoryPoints;
+                    item.Title = updatedItem.Title;
+
+                    await _context.SaveChangesAsync();
+                    return true;
+                }
+            } catch (Exception e)
+            {
+                // exception updating full agile item
+            }
+            return false;
+        }
+
+        public async Task<AgileItemVm> GetFullAgileItem(Guid id)
+        {
+            try
+            {
+                var item = await _context.AgileItems.Where(a => a.Id == id && a.IsActive == true)
+                    .Select(i => new AgileItemVm
+                    {
+                        AgileItemType = i.AgileItemType,
+                        AssigneeId = i.AssigneeId,
+                        AssigneeName = i.AssigneeName,
+                        BoardId = i.BoardId,
+                        CreatedBy = i.CreatedBy,
+                        CreatedOn = i.CreatedOn,
+                        Description = i.Description,
+                        DueBy = i.DueBy,
+                        EstimatedTime = i.EstimatedTime,
+                        Id = i.Id,
+                        IsComplete = i.IsComplete,
+                        IsActive = i.IsActive,
+                        LoggedTime = i.LoggedTime,
+                        Order = i.Order,
+                        ParentId = i.ParentId,
+                        Priority = i.Priority,
+                        Status = i.Status,
+                        StoryPoints = i.StoryPoints,
+                        Title = i.Title
+                    }).FirstOrDefaultAsync();
+
+                if (item != null)
+                {
+                    var parentTitle = await _context.AgileItems.Where(a => a.Id == item.ParentId)
+                            .Select(x => x.Title).FirstOrDefaultAsync();
+
+                    item.ParentTitle = parentTitle;
+
+                    if(item.AgileItemType != Models.Types.AgileItemType.Task)
+                    {
+                        item.TotalChildren = await _context.AgileItems.Where(a => a.ParentId == item.Id).CountAsync();
+                        item.CompleteChildren = await _context.AgileItems.Where(a => a.ParentId == item.Id && a.Status == Models.Types.Status.Complete).CountAsync();
+                    }
+                    return item;
+                }
+            }
+            catch (Exception e)
+            {
+                //exception when getting a full agile item...
+            }
+            return null;
+        }
+
+        public async Task<List<AgileItemOverviewVm>> GetRelatedItems(Guid id)
+        {
+            try
+            {
+                var item = await _context.AgileItems.Where(a => a.Id == id && a.IsActive == true).FirstOrDefaultAsync();
+
+                if (item != null)
+                {
+                    if (item.AgileItemType == Models.Types.AgileItemType.Task)
+                    {
+                        return await GetRelatedTasks(item);
+                    }
+                    return await GetChildren(item);
+                }
+            }
+            catch (Exception e)
+            {
+                // exception getting related agile items...
+            }
+            return null;
+        }
+
+        public async Task<List<AgileItemOverviewVm>> GetRelatedTasks(AgileItemDto item)
+        {
+            try
+            {
+                return await _context.AgileItems.Where(a => a.ParentId == item.ParentId && a.Id != item.Id && a.IsActive == true)
+                    .Select(i => new AgileItemOverviewVm
+                    {
+                        Description = i.Description,
+                        Id = i.Id,
+                        IsComplete = i.IsComplete,
+                        Order = i.Order,
+                        Priority = i.Priority,
+                        Status = i.Status,
+                        Title = i.Title,
+                        AssigneeId = i.AssigneeId,
+                        AssigneeName = i.AssigneeName
+                    }).Take(4).ToListAsync();
+            }
+            catch (Exception e)
+            {
+                // exception getting related tasks...
+            }
+            return null;
+        }
+
+        public async Task<List<AgileItemOverviewVm>> GetChildren(AgileItemDto item)
+        {
+            try
+            {
+                return await _context.AgileItems.Where(i => i.ParentId == item.Id && i.IsActive == true)
+                    .Select(i => new AgileItemOverviewVm
+                    {
+                        Description = i.Description,
+                        Id = i.Id,
+                        IsComplete = i.IsComplete,
+                        Priority = i.Priority,
+                        Status = i.Status,
+                        Title = i.Title,
+                        AssigneeId = i.AssigneeId,
+                        AssigneeName = i.AssigneeName
+                    }).Take(4).ToListAsync();
+            }
+            catch (Exception e)
+            {
+                // exception getting children
+            }
+            return null;
+        }
     }
 }

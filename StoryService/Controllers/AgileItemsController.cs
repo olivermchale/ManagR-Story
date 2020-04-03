@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using StoryService.Models.Dtos;
+using StoryService.Models.ViewModels.Board;
 using StoryService.Repository.Interfaces;
 
 namespace StoryService.Controllers
@@ -32,6 +33,46 @@ namespace StoryService.Controllers
                 return Ok(success);
             }
             return new StatusCodeResult(500); 
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateAgileItem([FromBody] BoardTaskVm updatedTask)
+        {
+            var success = await _agileItemRepository.UpdateAgileItem(updatedTask);
+            if (success)
+            {
+                return Ok(success);
+            }
+            return new StatusCodeResult(500);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateFullAgileItem([FromBody] AgileItemVm agileItemVm)
+        {
+            var success = await _agileItemRepository.UpdateFullAgileItem(agileItemVm);
+            if (success)
+            {
+                return Ok(success);
+            }
+            return new StatusCodeResult(500);
+        }
+        
+        [HttpGet]
+        public async Task<IActionResult> GetFullAgileItem(Guid id)
+        {
+            var item = await _agileItemRepository.GetFullAgileItem(id);
+            if (item != null)
+            {
+                return Ok(item);
+            }
+            return new StatusCodeResult(500);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetRelatedAgileItems(Guid id)
+        {
+            var item = await _agileItemRepository.GetRelatedItems(id);
+            return Ok(item);
         }
     }
 }

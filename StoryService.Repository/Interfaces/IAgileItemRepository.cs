@@ -1,5 +1,6 @@
 ﻿using StoryService.Models.Dtos;
 using StoryService.Models.ViewModels;
+using StoryService.Models.ViewModels.Board;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,8 +12,16 @@ namespace StoryService.Repository.Interfaces
     {
         public Task<bool> CreateAgileItem(CreateAgileItemDto agileItem);
 
-        Task<bool> CreateStoryWithTasks(CreateStoryWithTasksDto storyAndTasks);
+        public Task<bool> CreateStoryWithTasks(CreateStoryWithTasksDto storyAndTasks);
 
-        Task<List<AgileItemShortVm>> SearchForAgileItem(SearchAgileItemDto search);
+        public Task<List<AgileItemShortVm>> SearchForAgileItem(SearchAgileItemDto search);
+
+        public Task<bool> UpdateAgileItem(BoardTaskVm updatedTask);
+
+        public Task<bool> UpdateFullAgileItem(AgileItemVm updatedItem);
+
+        public Task<AgileItemVm> GetFullAgileItem(Guid id);
+
+        public Task<List<AgileItemOverviewVm>> GetRelatedItems(Guid id);
     }
 }
