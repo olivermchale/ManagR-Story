@@ -8,6 +8,8 @@ namespace StoryService.Models.Dtos
     {
         public Guid Id { get; set; }
         public string BoardName { get; set; }
+        public DateTime BoardStart { get; set; }
+        public DateTime BoardEnd { get; set; }
         public bool IsActive { get; set; }
     }
 }

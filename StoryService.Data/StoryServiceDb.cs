@@ -8,10 +8,10 @@ namespace StoryService.Data
     {
         public DbSet<BoardDto> Boards { get; set; }
         public DbSet<AgileItemDto> AgileItems { get; set; }
+        public DbSet<DailyDataDto> DailyData { get; set; }
 
         public StoryServiceDb(DbContextOptions<StoryServiceDb> options) : base(options)
         {
-
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

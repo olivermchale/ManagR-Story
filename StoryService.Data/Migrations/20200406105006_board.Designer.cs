@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StoryService.Data;
 
 namespace StoryService.Data.Migrations
 {
     [DbContext(typeof(StoryServiceDb))]
-    partial class StoryServiceDbModelSnapshot : ModelSnapshot
+    [Migration("20200406105006_board")]
+    partial class board
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -110,29 +112,6 @@ namespace StoryService.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Boards");
-                });
-
-            modelBuilder.Entity("StoryService.Models.Dtos.DailyDataDto", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("BoardId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("LoggedHours")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TasksComplete")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("DailyData");
                 });
 #pragma warning restore 612, 618
         }

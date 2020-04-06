@@ -12,6 +12,7 @@ using Microsoft.Extensions.Hosting;
 using StoryService.Data;
 using StoryService.Repository;
 using StoryService.Repository.Interfaces;
+using StoryService.Services;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IWebHostEnvironment;
 
 namespace StoryService
@@ -49,6 +50,13 @@ namespace StoryService
 
             services.AddScoped<IBoardRepository, BoardRepository>();
             services.AddScoped<IAgileItemRepository, AgileItemRepository>();
+            services.AddScoped<IChartsRepository, ChartsRepository>();
+
+            if(!Environment.IsDevelopment())
+            {
+                services.AddHostedService<BackgroundChartService>();
+            }
+            
 
             services.AddControllers().AddNewtonsoftJson();
         }
