@@ -9,6 +9,8 @@ namespace StoryService.Repository.Interfaces
     public interface IChartsRepository
     {
         public Task<ChartVm> GetBurndownChart(Guid id);
+        public Task<ChartVm> GetCompleteTasksChart(Guid id);
         public Task<bool> SaveDailyChartData();
+        public Task<AnalyticsVm> GetAnalytics(Guid id);
     }
 }

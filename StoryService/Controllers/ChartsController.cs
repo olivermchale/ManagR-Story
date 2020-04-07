@@ -23,5 +23,17 @@ namespace StoryService.Controllers
         {
             return Ok(await _chartsRepository.GetBurndownChart(id));
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetProgressChart(Guid id)
+        {
+            return Ok(await _chartsRepository.GetCompleteTasksChart(id));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAnalytics(Guid id)
+        {
+            return Ok(await _chartsRepository.GetAnalytics(id));
+        }
     }
 }
