@@ -21,14 +21,18 @@ namespace StoryService.Data
                 new BoardDto
                 {
                     Id = Guid.Parse("dbb831c6-67da-4e92-bdc4-d2f748efad20"),
-                    BoardName = "Hailzys Board",
+                    BoardName = "Sprint 1 Board",
                     IsActive = true,
+                    BoardStart = DateTime.Now,
+                    BoardEnd = DateTime.Now.AddDays(7),
                 },
                 new BoardDto
                 {
                     Id = Guid.Parse("1f7f8649-8fd5-4346-ad7c-51c30fa96607"),
-                    BoardName = "Rena's Board",
-                    IsActive = true
+                    BoardName = "Sprint 2 Board",
+                    IsActive = true,
+                    BoardStart = DateTime.Now,
+                    BoardEnd = DateTime.Now.AddDays(7),
                 },
             };
             boards.ForEach(board =>
@@ -48,9 +52,9 @@ namespace StoryService.Data
                     AgileItemType = Models.Types.AgileItemType.SuperStory,
                     BoardId = Guid.Parse("dbb831c6-67da-4e92-bdc4-d2f748efad20"),
                     CreatedBy = Guid.Parse("aa6b576b-93f1-485e-87bc-2710e694a33a"),
-                    CreatedOn = new DateTime(),
+                    CreatedOn = DateTime.Now,
                     Description = "Get to the moon",
-                    DueBy = new DateTime().AddDays(1),
+                    DueBy = DateTime.Now.AddDays(1),
                     IsActive = true,
                     IsComplete = false,
                     Order = 1,
@@ -68,9 +72,9 @@ namespace StoryService.Data
                     AgileItemType = Models.Types.AgileItemType.Story,
                     BoardId = Guid.Parse("dbb831c6-67da-4e92-bdc4-d2f748efad20"),
                     CreatedBy = Guid.Parse("aa6b576b-93f1-485e-87bc-2710e694a33a"),
-                    CreatedOn = new DateTime(),
+                    CreatedOn = DateTime.Now,
                     Description = "Build a rocket ship",
-                    DueBy = new DateTime().AddDays(1),
+                    DueBy = DateTime.Now.AddDays(1),
                     IsActive = true,
                     IsComplete = false,
                     Order = 2,
@@ -87,9 +91,9 @@ namespace StoryService.Data
                     AgileItemType = Models.Types.AgileItemType.Story,
                     BoardId = Guid.Parse("dbb831c6-67da-4e92-bdc4-d2f748efad20"),
                     CreatedBy = Guid.Parse("aa6b576b-93f1-485e-87bc-2710e694a33a"),
-                    CreatedOn = new DateTime(),
+                    CreatedOn = DateTime.Now,
                     Description = "Gather the supplies for the rocket ship",
-                    DueBy = new DateTime().AddDays(1),
+                    DueBy = DateTime.Now.AddDays(1),
                     IsActive = true,
                     IsComplete = false,
                     Order = 2,
@@ -106,9 +110,9 @@ namespace StoryService.Data
                     AgileItemType = Models.Types.AgileItemType.Task,
                     BoardId = Guid.Parse("dbb831c6-67da-4e92-bdc4-d2f748efad20"),
                     CreatedBy = Guid.Parse("aa6b576b-93f1-485e-87bc-2710e694a33a"),
-                    CreatedOn = new DateTime(),
+                    CreatedOn = DateTime.Now,
                     Description = "Buy all rocket parts",
-                    DueBy = new DateTime().AddDays(1),
+                    DueBy = DateTime.Now.AddDays(1),
                     EstimatedTime = 2,
                     LoggedTime = 1,
                     IsActive = true,
@@ -127,9 +131,9 @@ namespace StoryService.Data
                     AgileItemType = Models.Types.AgileItemType.Task,
                     BoardId = Guid.Parse("dbb831c6-67da-4e92-bdc4-d2f748efad20"),
                     CreatedBy = Guid.Parse("aa6b576b-93f1-485e-87bc-2710e694a33a"),
-                    CreatedOn = new DateTime(),
+                    CreatedOn = DateTime.Now,
                     Description = "Put together rocket parts",
-                    DueBy = new DateTime().AddDays(1),
+                    DueBy = DateTime.Now.AddDays(1),
                     EstimatedTime = 5,
                     LoggedTime = 0,
                     IsActive = true,
@@ -143,6 +147,72 @@ namespace StoryService.Data
             agileItems.ForEach(agileItem =>
             {
                 context.AgileItems.Add(agileItem);
+            });
+            await context.SaveChangesAsync();
+
+            // create fake logged time entries for burndown charts
+            var dailyDataDtos = new List<DailyDataDto>
+            {
+                new DailyDataDto
+                {
+                    Id = Guid.NewGuid(),
+                    BoardId = Guid.Parse("dbb831c6-67da-4e92-bdc4-d2f748efad20"),
+                    Date = DateTime.Now,
+                    LoggedHours = 5,
+                    TasksComplete = 3
+                },
+                new DailyDataDto
+                {
+                    Id = Guid.NewGuid(),
+                    BoardId = Guid.Parse("dbb831c6-67da-4e92-bdc4-d2f748efad20"),
+                    Date = DateTime.Now.AddDays(-1),
+                    LoggedHours = 7,
+                    TasksComplete = 4
+                },
+                new DailyDataDto
+                {
+                    Id = Guid.NewGuid(),
+                    BoardId = Guid.Parse("dbb831c6-67da-4e92-bdc4-d2f748efad20"),
+                    Date = DateTime.Now.AddDays(-2),
+                    LoggedHours = 12,
+                    TasksComplete = 4
+                },
+                new DailyDataDto
+                {
+                    Id = Guid.NewGuid(),
+                    BoardId = Guid.Parse("dbb831c6-67da-4e92-bdc4-d2f748efad20"),
+                    Date = DateTime.Now.AddDays(-3),
+                    LoggedHours = 13,
+                    TasksComplete = 4
+                },
+                 new DailyDataDto
+                {
+                    Id = Guid.NewGuid(),
+                    BoardId = Guid.Parse("dbb831c6-67da-4e92-bdc4-d2f748efad20"),
+                    Date = DateTime.Now.AddDays(-4),
+                    LoggedHours = 15,
+                    TasksComplete = 5
+                },
+                 new DailyDataDto
+                {
+                    Id = Guid.NewGuid(),
+                    BoardId = Guid.Parse("dbb831c6-67da-4e92-bdc4-d2f748efad20"),
+                    Date = DateTime.Now.AddDays(-5),
+                    LoggedHours = 21,
+                    TasksComplete = 6
+                },
+                new DailyDataDto
+                {
+                    Id = Guid.NewGuid(),
+                    BoardId = Guid.Parse("dbb831c6-67da-4e92-bdc4-d2f748efad20"),
+                    Date = DateTime.Now.AddDays(-6),
+                    LoggedHours = 24,
+                    TasksComplete = 7
+                }
+            };
+            dailyDataDtos.ForEach(dto =>
+            {
+                context.DailyData.Add(dto);
             });
             await context.SaveChangesAsync();
         }

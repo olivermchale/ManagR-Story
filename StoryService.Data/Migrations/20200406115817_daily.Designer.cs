@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StoryService.Data;
 
 namespace StoryService.Data.Migrations
 {
     [DbContext(typeof(StoryServiceDb))]
-    partial class StoryServiceDbModelSnapshot : ModelSnapshot
+    [Migration("20200406115817_daily")]
+    partial class daily
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -118,11 +120,11 @@ namespace StoryService.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("BoardId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("EstimatedHours")
+                        .HasColumnType("int");
 
                     b.Property<int>("LoggedHours")
                         .HasColumnType("int");
