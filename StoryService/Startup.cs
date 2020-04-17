@@ -52,10 +52,10 @@ namespace StoryService
             services.AddScoped<IAgileItemRepository, AgileItemRepository>();
             services.AddScoped<IChartsRepository, ChartsRepository>();
 
-            if(!Environment.IsDevelopment())
-            {
-                services.AddHostedService<BackgroundChartService>();
-            }
+            //if(!Environment.IsDevelopment())
+            //{
+            //    services.AddHostedService<BackgroundChartService>();
+            //}
             
 
             services.AddControllers().AddNewtonsoftJson();
