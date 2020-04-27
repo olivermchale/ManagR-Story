@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using StoryService.Models.Dtos;
@@ -11,6 +12,7 @@ using StoryService.Repository.Interfaces;
 namespace StoryService.Controllers
 {
     [EnableCors("ManagRAppServices")]
+    [Authorize(Policy = "spectator")]
     public class AgileItemsController : Controller
     {
         private IAgileItemRepository _agileItemRepository;

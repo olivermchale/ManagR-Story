@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using StoryService.Repository;
@@ -9,6 +10,7 @@ using StoryService.Repository.Interfaces;
 
 namespace StoryService.Controllers
 {
+    [Authorize(Policy = "spectator")]
     [EnableCors("ManagRAppServices")]
     public class BoardController : Controller
     {

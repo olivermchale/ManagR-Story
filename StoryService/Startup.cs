@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
@@ -45,6 +46,33 @@ namespace StoryService
                 });
             });
 
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
+            var accountUri = Configuration.GetValue<Uri>("AccountsUrl");
+            services.AddAuthentication("Bearer")
+            .AddJwtBearer("Bearer", config =>
+            {
+                config.Authority = accountUri.ToString();
+                config.RequireHttpsMetadata = false;
+                config.Audience = "ManagR";
+            });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("leader", builder =>
+                {
+                    builder.RequireClaim("role", "analyst", "leader");
+                });
+                options.AddPolicy("user", builder =>
+                {
+                    builder.RequireClaim("role", "user", "spectator");
+                });
+                options.AddPolicy("spectator", builder =>
+                {
+                    builder.RequireClaim("role", "spectator");
+                });
+            });
+
             services.AddDbContext<StoryServiceDb>(options => options.UseSqlServer(
              Configuration.GetConnectionString("PurchaseOrders")));
 
@@ -72,6 +100,10 @@ namespace StoryService
             app.UseRouting();
 
             app.UseCors("ManagRAppServices");
+
+            app.UseAuthentication();
+
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
