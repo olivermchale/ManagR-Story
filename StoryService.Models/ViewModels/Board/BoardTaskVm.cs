@@ -16,6 +16,6 @@ namespace StoryService.Models.ViewModels.Board
         public string AssigneeName { get; set; }
         public Priority Priority { get; set; }
         public Status Status { get; set; }
-
+        public string? BlockedReason { get; set; }
     }
 }

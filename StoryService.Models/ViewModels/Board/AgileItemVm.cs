@@ -30,5 +30,6 @@ namespace StoryService.Models.ViewModels.Board
         public Guid BoardId { get; set; }
         public int TotalChildren { get; set; }
         public int CompleteChildren { get; set; }
+        public string BlockedReason { get; set; }
     }
 }

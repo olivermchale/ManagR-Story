@@ -22,6 +22,7 @@ namespace StoryService.Models.Dtos
         public double? StoryPoints { get; set; }
         public double? EstimatedTime { get; set; }
         public double? LoggedTime { get; set; }
+        public string? BlockedReason { get; set; }
         public int? Order { get; set; }
         public Guid AssigneeId { get; set; }
         public string AssigneeName { get; set; }

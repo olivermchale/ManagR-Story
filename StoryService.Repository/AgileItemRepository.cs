@@ -157,6 +157,11 @@ namespace StoryService.Repository
                     item.Priority = updatedTask.Priority;
                     item.Status = updatedTask.Status;
 
+                    if(updatedTask.BlockedReason != null)
+                    {
+                        item.BlockedReason = updatedTask.BlockedReason;
+                    }
+
                     await _context.SaveChangesAsync();
                     return true;
                 }
@@ -196,6 +201,11 @@ namespace StoryService.Repository
                     item.StoryPoints = updatedItem.StoryPoints;
                     item.Title = updatedItem.Title;
 
+                    if(updatedItem.BlockedReason != null)
+                    {
+                        item.BlockedReason = updatedItem.BlockedReason;
+                    }
+
                     await _context.SaveChangesAsync();
                     return true;
                 }
@@ -231,7 +241,8 @@ namespace StoryService.Repository
                         Priority = i.Priority,
                         Status = i.Status,
                         StoryPoints = i.StoryPoints,
-                        Title = i.Title
+                        Title = i.Title,
+                        BlockedReason = i.BlockedReason
                     }).FirstOrDefaultAsync();
 
                 if (item != null)
