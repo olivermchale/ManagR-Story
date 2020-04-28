@@ -33,5 +33,12 @@ namespace StoryService.Controllers
             var boards = await _boardRepository.GetBoardNames();
             return Ok(boards);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetBoardTopology(Guid id)
+        {
+            var topology = await _boardRepository.GetBoardTopology(id);
+            return Ok(topology);
+        }
     }
 }

@@ -11,6 +11,8 @@ namespace StoryService.Repository.Interfaces
     {
         public Task<BoardVm> GetBoard(Guid boardId);
 
+        public Task<TopologyVm> GetBoardTopology(Guid BoardId);
+
         Task<BoardNameListVm> GetBoardNames();
     }
 }

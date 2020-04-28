@@ -59,6 +59,59 @@ namespace StoryService.Repository
             };
         }
 
+        public async Task<TopologyVm> GetBoardTopology (Guid BoardId)
+        {
+            var superStoryCount = 0;
+            var storyCount = 0;
+            var taskCount = 0;
+            var superStories = await _context.AgileItems
+                .Where(item => item.BoardId == BoardId && item.AgileItemType == Models.Types.AgileItemType.SuperStory && item.IsActive == true)
+                .Select(b => new SuperStoryVm
+                {
+                    Id = b.Id,
+                    Title = b.Title,
+                }).ToListAsync();
+
+            superStoryCount = superStories.Count;
+
+            foreach (var superStory in superStories)
+            {
+                var stories = await _context.AgileItems
+                            .Where(item => item.ParentId == superStory.Id)
+                            .Select(t => new StoryVm
+                            {
+                                Id = t.Id,
+                                Title = t.Title
+                            }).ToListAsync();
+                storyCount += stories.Count;
+
+                foreach(var story in stories)
+                {
+                    var tasks = await _context.AgileItems
+                        .Where(item => item.ParentId == story.Id)
+                            .Select(t => new TaskVm
+                            {
+                                Id = t.Id,
+                                Title = t.Title
+                            }).ToListAsync();
+                    taskCount += tasks.Count;
+                    story.Tasks = tasks;
+                }
+                superStory.Stories = stories;
+            }
+
+            var boardTitle = await _context.Boards.Where(b => b.Id == BoardId).Select(b => b.BoardName).FirstOrDefaultAsync();
+
+            return new TopologyVm
+            {
+                SuperStories = superStories,
+                BoardTitle = boardTitle,
+                StoryCount = storyCount,
+                SuperStoryCount = superStoryCount,
+                TaskCount = taskCount
+            };
+        }
+
         public async Task<BoardNameListVm> GetBoardNames()
         {
             var boardNames = await _context.Boards
