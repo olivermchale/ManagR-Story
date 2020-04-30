@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using StoryService.Data;
 using StoryService.Models.Dtos;
 using StoryService.Models.ViewModels;
@@ -15,14 +16,18 @@ namespace StoryService.Repository
     public class BoardRepository : IBoardRepository
     {
         private StoryServiceDb _context;
-        public BoardRepository(StoryServiceDb context)
+        private ILogger<BoardRepository> _logger;
+        public BoardRepository(StoryServiceDb context, ILogger<BoardRepository> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public async Task<BoardVm> GetBoard(Guid BoardId)
         {
-            var stories = await _context.AgileItems
+            try
+            {
+                var stories = await _context.AgileItems
                 .Where(item => item.BoardId == BoardId && item.AgileItemType == Models.Types.AgileItemType.Story && item.IsActive == true)
                 .Select(b => new BoardStoryVm
                 {
@@ -35,81 +40,98 @@ namespace StoryService.Repository
                     Title = b.Title,
                 }).ToListAsync();
 
-            foreach(var story in stories)
-            {
-                var tasks = await _context.AgileItems
-                            .Where(item => item.ParentId == story.Id)
-                            .Select(t => new BoardTaskVm
-                            {
-                                AssigneeId = t.AssigneeId,
-                                AssigneeName = t.AssigneeName,
-                                Description = t.Description,
-                                Id = t.Id,
-                                Order = t.Order,
-                                Priority = t.Priority,
-                                Status = t.Status,
-                                Title = t.Title
-                            }).ToListAsync();
-                story.Tasks = OrderTasksByStatus(tasks);
-            }
+                foreach (var story in stories)
+                {
+                    var tasks = await _context.AgileItems
+                                .Where(item => item.ParentId == story.Id)
+                                .Select(t => new BoardTaskVm
+                                {
+                                    AssigneeId = t.AssigneeId,
+                                    AssigneeName = t.AssigneeName,
+                                    Description = t.Description,
+                                    Id = t.Id,
+                                    Order = t.Order,
+                                    Priority = t.Priority,
+                                    Status = t.Status,
+                                    Title = t.Title
+                                }).ToListAsync();
+                    story.Tasks = OrderTasksByStatus(tasks);
+                }
 
-            return new BoardVm
+                return new BoardVm
+                {
+                    Stories = stories
+                };
+            }
+            catch (Exception e)
             {
-                Stories = stories
-            };
+                _logger.LogError("Exception when getting board, Exception:" + e + "Stack trace:" + e.StackTrace, "board: " + BoardId);
+            }
+            return null;
+
+
         }
 
         public async Task<TopologyVm> GetBoardTopology (Guid BoardId)
         {
-            var superStoryCount = 0;
-            var storyCount = 0;
-            var taskCount = 0;
-            var superStories = await _context.AgileItems
-                .Where(item => item.BoardId == BoardId && item.AgileItemType == Models.Types.AgileItemType.SuperStory && item.IsActive == true)
-                .Select(b => new SuperStoryVm
-                {
-                    Id = b.Id,
-                    Title = b.Title,
-                }).ToListAsync();
-
-            superStoryCount = superStories.Count;
-
-            foreach (var superStory in superStories)
+            try
             {
-                var stories = await _context.AgileItems
-                            .Where(item => item.ParentId == superStory.Id)
-                            .Select(t => new StoryVm
-                            {
-                                Id = t.Id,
-                                Title = t.Title
-                            }).ToListAsync();
-                storyCount += stories.Count;
+                var superStoryCount = 0;
+                var storyCount = 0;
+                var taskCount = 0;
+                var superStories = await _context.AgileItems
+                    .Where(item => item.BoardId == BoardId && item.AgileItemType == Models.Types.AgileItemType.SuperStory && item.IsActive == true)
+                    .Select(b => new SuperStoryVm
+                    {
+                        Id = b.Id,
+                        Title = b.Title,
+                    }).ToListAsync();
 
-                foreach(var story in stories)
+                superStoryCount = superStories.Count;
+
+                foreach (var superStory in superStories)
                 {
-                    var tasks = await _context.AgileItems
-                        .Where(item => item.ParentId == story.Id)
-                            .Select(t => new TaskVm
-                            {
-                                Id = t.Id,
-                                Title = t.Title
-                            }).ToListAsync();
-                    taskCount += tasks.Count;
-                    story.Tasks = tasks;
+                    var stories = await _context.AgileItems
+                                .Where(item => item.ParentId == superStory.Id)
+                                .Select(t => new StoryVm
+                                {
+                                    Id = t.Id,
+                                    Title = t.Title
+                                }).ToListAsync();
+                    storyCount += stories.Count;
+
+                    foreach (var story in stories)
+                    {
+                        var tasks = await _context.AgileItems
+                            .Where(item => item.ParentId == story.Id)
+                                .Select(t => new TaskVm
+                                {
+                                    Id = t.Id,
+                                    Title = t.Title
+                                }).ToListAsync();
+                        taskCount += tasks.Count;
+                        story.Tasks = tasks;
+                    }
+                    superStory.Stories = stories;
                 }
-                superStory.Stories = stories;
+
+                var boardTitle = await _context.Boards.Where(b => b.Id == BoardId).Select(b => b.BoardName).FirstOrDefaultAsync();
+
+                return new TopologyVm
+                {
+                    SuperStories = superStories,
+                    BoardTitle = boardTitle,
+                    StoryCount = storyCount,
+                    SuperStoryCount = superStoryCount,
+                    TaskCount = taskCount
+                };
             }
 
-            var boardTitle = await _context.Boards.Where(b => b.Id == BoardId).Select(b => b.BoardName).FirstOrDefaultAsync();
-
-            return new TopologyVm
+            catch(Exception e)
             {
-                SuperStories = superStories,
-                BoardTitle = boardTitle,
-                StoryCount = storyCount,
-                SuperStoryCount = superStoryCount,
-                TaskCount = taskCount
-            };
+                _logger.LogError("Exception when getting board, Exception:" + e + "Stack trace:" + e.StackTrace, "board: " + BoardId);
+            }
+            return null;
         }
 
         public async Task<BoardNameListVm> GetBoardNames()
@@ -128,7 +150,7 @@ namespace StoryService.Repository
             };
         }
 
-        public static BoardTaskListVm OrderTasksByStatus(List<BoardTaskVm> tasks)
+        private static BoardTaskListVm OrderTasksByStatus(List<BoardTaskVm> tasks)
         {
             return new BoardTaskListVm
             {

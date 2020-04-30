@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using StoryService.Data;
 using StoryService.Models.Dtos;
 using StoryService.Models.ViewModels;
@@ -15,13 +16,16 @@ namespace StoryService.Repository
     public class AgileItemRepository : IAgileItemRepository
     {
         private StoryServiceDb _context;
-        public AgileItemRepository(StoryServiceDb context)
+        private ILogger<AgileItemRepository> _logger;
+        public AgileItemRepository(StoryServiceDb context, ILogger<AgileItemRepository> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public async Task<bool> CreateAgileItem(CreateAgileItemDto agileItem)
         {
+            // Create item with necessary server side properties
             var fullItem = CreateServerSideAgileItem(agileItem);
             try
             {
@@ -32,7 +36,7 @@ namespace StoryService.Repository
 
                     if (parent == null || board == null)
                     {
-                        throw new Exception("Invalid parent Id");
+                        throw new Exception("Invalid parent or board Id");
                     }
                 }
 
@@ -42,29 +46,7 @@ namespace StoryService.Repository
             }
             catch (Exception e)
             {
-                // Exception when creating a new agile item
-            }
-            return false;
-        }
-
-        public async Task<bool> CreateStoryWithTasks(CreateStoryWithTasksDto storyAndTasks)
-        {
-            try
-            {
-                // Create the story in DB first
-                await _context.AgileItems.AddAsync(storyAndTasks.Story);
-                // Now Add all tasks
-                foreach (var task in storyAndTasks.Tasks)
-                {
-                    await _context.AddAsync(task);
-                }
-                // Now save all records to db
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            catch (Exception e)
-            {
-                // Exception when creating story with tasks
+                _logger.LogError("Exception when creating agile item, Exception:" + e + "Stack trace:" + e.StackTrace, "item: " + agileItem);
             }
             return false;
         }
@@ -73,6 +55,7 @@ namespace StoryService.Repository
         {
             try
             {
+                // search on any key fields...
                 if (search.ItemType == Models.Types.AgileItemType.SuperStory)
                 {
                     return await _context.AgileItems
@@ -112,12 +95,12 @@ namespace StoryService.Repository
             }
             catch (Exception e)
             {
-                // Exception when searching...
+                _logger.LogError("Exception when creating searching for item, Exception:" + e + "Stack trace:" + e.StackTrace + "Search Term: " + search.SearchQuery);
             }
             return null;
         }
 
-        public AgileItemDto CreateServerSideAgileItem(CreateAgileItemDto agileItem)
+        private AgileItemDto CreateServerSideAgileItem(CreateAgileItemDto agileItem)
         {
             // Create Dto in expected shape with some necessary server side generated properties such as createdOn
             return new AgileItemDto
@@ -143,6 +126,7 @@ namespace StoryService.Repository
             };
         }
 
+        // used to quickly update an agile item directly from the board, usually a status change
         public async Task<bool> UpdateAgileItem(BoardTaskVm updatedTask)
         {
             try
@@ -168,11 +152,12 @@ namespace StoryService.Repository
             }
             catch (Exception e)
             {
-                // Error when updating agile item.
+                _logger.LogError("Exception when updating agile item, Exception:" + e + "Stack trace:" + e.StackTrace + "updated task:" + updatedTask);
             }
             return false;
         }
 
+        // used to update a full agile item, usually from the details page
         public async Task<bool> UpdateFullAgileItem(AgileItemVm updatedItem)
         {
             try
@@ -211,11 +196,13 @@ namespace StoryService.Repository
                 }
             } catch (Exception e)
             {
-                // exception updating full agile item
+                _logger.LogError("Exception when creating updating item, Exception:" + e + "Stack trace:" + e.StackTrace + "item: " + updatedItem);
             }
             return false;
         }
 
+
+        // returns a full agile item
         public async Task<AgileItemVm> GetFullAgileItem(Guid id)
         {
             try
@@ -262,7 +249,7 @@ namespace StoryService.Repository
             }
             catch (Exception e)
             {
-                //exception when getting a full agile item...
+                _logger.LogError("Exception when getting agile item, Exception:" + e + "Stack trace:" + e.StackTrace + "id: " + id);
             }
             return null;
         }
@@ -284,7 +271,7 @@ namespace StoryService.Repository
             }
             catch (Exception e)
             {
-                // exception getting related agile items...
+                _logger.LogError("Exception when getting related agile items, Exception:" + e + "Stack trace:" + e.StackTrace + "id: " + id);
             }
             return null;
         }
@@ -309,7 +296,7 @@ namespace StoryService.Repository
             }
             catch (Exception e)
             {
-                // exception getting related tasks...
+                _logger.LogError("Exception when getting related tasks, Exception:" + e + "Stack trace:" + e.StackTrace + "item: " + item);
             }
             return null;
         }
@@ -333,7 +320,7 @@ namespace StoryService.Repository
             }
             catch (Exception e)
             {
-                // exception getting children
+                _logger.LogError("Exception when getting agile item children, Exception:" + e + "Stack trace:" + e.StackTrace, "item: " + item);
             }
             return null;
         }

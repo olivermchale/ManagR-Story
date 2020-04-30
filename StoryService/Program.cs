@@ -21,6 +21,7 @@ namespace StoryService
             {
                 var services = scope.ServiceProvider;
                 var env = services.GetRequiredService<IWebHostEnvironment>();
+                // Get database service from injector and migrate, if necessary, seed stub data for development.
                 var context = services.GetRequiredService<StoryServiceDb>();
                 context.Database.Migrate();
                 try
@@ -38,9 +39,14 @@ namespace StoryService
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
+            .ConfigureLogging(logging =>
+            {
+                logging.ClearProviders();
+                logging.AddConsole();
+            })
+            .ConfigureWebHostDefaults(webBuilder =>
+            {
+                webBuilder.UseStartup<Startup>();
+            });
     }
 }

@@ -33,6 +33,7 @@ namespace StoryService
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            // Add cors policy to prevent CORS attacks.
             services.AddCors(options =>
             {
                 options.AddPolicy("ManagRAppServices",
@@ -46,6 +47,7 @@ namespace StoryService
                 });
             });
 
+            // Add authentication to ManagRs internal auth service, URL changing automatically depending on environment
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
             var accountUri = Configuration.GetValue<Uri>("AccountsUrl");
@@ -57,6 +59,7 @@ namespace StoryService
                 config.Audience = "ManagR";
             });
 
+            // Add policies and their required claims
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("leader", builder =>
@@ -73,12 +76,16 @@ namespace StoryService
                 });
             });
 
+            // Add db
             services.AddDbContext<StoryServiceDb>(options => options.UseSqlServer(
              Configuration.GetConnectionString("PurchaseOrders")));
 
+            // provide scoped repositories for dependency injection
             services.AddScoped<IBoardRepository, BoardRepository>();
             services.AddScoped<IAgileItemRepository, AgileItemRepository>();
             services.AddScoped<IChartsRepository, ChartsRepository>();
+
+            // Add background service
 
             //if(!Environment.IsDevelopment())
             //{

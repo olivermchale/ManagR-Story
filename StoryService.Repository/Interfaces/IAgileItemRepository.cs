@@ -12,8 +12,6 @@ namespace StoryService.Repository.Interfaces
     {
         public Task<bool> CreateAgileItem(CreateAgileItemDto agileItem);
 
-        public Task<bool> CreateStoryWithTasks(CreateStoryWithTasksDto storyAndTasks);
-
         public Task<List<AgileItemShortVm>> SearchForAgileItem(SearchAgileItemDto search);
 
         public Task<bool> UpdateAgileItem(BoardTaskVm updatedTask);
